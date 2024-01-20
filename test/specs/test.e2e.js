@@ -107,39 +107,16 @@ describe("My Login application", () => {
     try {
       // setup
       await browser.url(boardPageUrl);
-      const createBtn = await $(
-        'button[data-testid="header-create-menu-button"]'
-      );
-      await waitAndClick(createBtn);
-
-      const createBoardBtn = await $(
-        'button[data-testid="header-create-board-button"]'
-      );
-      await createBoardBtn.waitForDisplayed({ timeout: 3000 });
-      await waitAndClick(createBoardBtn);
-
-      const boardTitleInput = await $(
-        'input[data-testid="create-board-title-input"]'
-      );
-      await boardTitleInput.waitForDisplayed({ timeout: 3000 });
-      await boardTitleInput.setValue(boardTitle);
-      const createBoardSubmitBtn = await $(
-        'button[data-testid="create-board-submit-button"]'
-      );
-      await waitAndClick(createBoardSubmitBtn);
-
-      const createdBoardTitle = await $('h1[data-testid="board-name-display"]');
-      await waitAndAssertText(createdBoardTitle, boardTitle);
+      await createBoard(boardTitle);
 
       // execute
-
       const boardsBtn = await $('a[data-testid="open-boards-link"]');
       await waitAndClick(boardsBtn);
 
       // const searchInputBtn = await $('input[data-test-id="search-dialog-input"]');
       const searchInputBtn = await $('nav span[aria-label="search"]');
       await waitAndClick(searchInputBtn);
-      
+
       const searchInput = await $('input[data-test-id="search-dialog-input"]');
       await searchInput.waitForDisplayed({ timeout: 3000 });
       await searchInput.setValue(boardTitle);
@@ -154,6 +131,32 @@ describe("My Login application", () => {
       await deleteByBoardName(boardTitle);
     }
   });
+
+  async function createBoard(boardName) {
+    const createBtn = await $(
+      'button[data-testid="header-create-menu-button"]'
+    );
+    await waitAndClick(createBtn);
+
+    const createBoardBtn = await $(
+      'button[data-testid="header-create-board-button"]'
+    );
+    await createBoardBtn.waitForDisplayed({ timeout: 3000 });
+    await waitAndClick(createBoardBtn);
+
+    const boardTitleInput = await $(
+      'input[data-testid="create-board-title-input"]'
+    );
+    await boardTitleInput.waitForDisplayed({ timeout: 3000 });
+    await boardTitleInput.setValue(boardName);
+    const createBoardSubmitBtn = await $(
+      'button[data-testid="create-board-submit-button"]'
+    );
+    await waitAndClick(createBoardSubmitBtn);
+
+    const createdBoardTitle = await $('h1[data-testid="board-name-display"]');
+    await waitAndAssertText(createdBoardTitle, boardName);
+  }
 
   async function deleteByBoardName(boardName) {
     const boardsBtn = await $('a[data-testid="open-boards-link"]');
