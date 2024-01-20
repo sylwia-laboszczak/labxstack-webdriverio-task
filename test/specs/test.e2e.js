@@ -5,6 +5,7 @@ const pageUrl="https://trello.com/home";
 const userEmail="";
 const userPassword="";
 const boardTitle = "My task to do";
+const listTilte = "Doing sth";
 const defaultVerifyTimeout = 5000;
 
 
@@ -113,7 +114,6 @@ describe("My Login application", () => {
       const boardsBtn = await $('a[data-testid="open-boards-link"]');
       await waitAndClick(boardsBtn);
 
-      // const searchInputBtn = await $('input[data-test-id="search-dialog-input"]');
       const searchInputBtn = await $('nav span[aria-label="search"]');
       await waitAndClick(searchInputBtn);
 
@@ -126,6 +126,32 @@ describe("My Login application", () => {
         `div[data-testid="trello-hover-preview-popper-container"] span[name="${boardTitle}"]`
       );
       await searchBordTitleInput.waitForDisplayed({ timeout: 20000 });
+    } finally {
+      //delete board
+      await deleteByBoardName(boardTitle);
+    }
+  });
+
+  it("should search a board", async () => {
+    try {
+      // setup
+      await browser.url(boardPageUrl);
+      await createBoard(boardTitle);
+
+      // execute
+      const addAnotherListBtn = await $('button[data-testid="list-composer-button"]' );
+      await waitAndClick(addAnotherListBtn);
+
+      const inputlistTitle = await $('ol#board textarea[name="Enter list title…"]');
+      await inputlistTitle.waitForDisplayed({ timeout: 5000 });
+      await inputlistTitle.setValue(listTilte);
+
+      const addListBtn = await $('button[data-testid="list-composer-add-list-button"]');
+      await waitAndClick(addListBtn);
+
+      // verify
+      const createdListTitle = await $('ol#board li:nth-child(4) h2');
+      await waitAndAssertText(createdListTitle, listTilte);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
