@@ -12,7 +12,9 @@ const defaultVerifyTimeout = 5000;
 
 
 describe("My Login application", () => {
-  beforeEach(async () => {});
+  beforeEach(async () => {
+    await browser.setWindowSize(1440, 1024 )
+  });
 
   afterEach(async () => {});
 
@@ -128,13 +130,17 @@ describe("My Login application", () => {
         `div[data-testid="trello-hover-preview-popper-container"] span[name="${boardTitle}"]`
       );
       await searchBordTitleInput.waitForDisplayed({ timeout: 20000 });
+
+      const boardsAgainBtn = await $('a[data-testid="open-boards-link"]');
+      await waitAndClick(boardsAgainBtn);
+
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
     }
   });
 
-  it("should search a board", async () => {
+  it("should add list to board", async () => {
     try {
       // setup
       await browser.url(boardPageUrl);
@@ -253,7 +259,6 @@ describe("My Login application", () => {
     await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
   });
 
-
   it("should change the workspace visibility to Private", async () => {
     // setup
     await browser.url(boardPageUrl);
@@ -340,8 +345,11 @@ describe("My Login application", () => {
   }
 
   async function deleteByBoardName(boardName) {
-    const boardsBtn = await $('a[data-testid="open-boards-link"]');
-    await waitAndClick(boardsBtn);
+    const workspacesNavBtn = await $('button[data-testid="workspace-switcher"]');
+    await waitAndClick(workspacesNavBtn);
+
+    const yourWorkspacesNavBtn = await $('ul[data-testid="workspace-switcher-popover"] ul:last-child li');
+    await waitAndClick(yourWorkspacesNavBtn);
 
     const showMoreBtn = await $(
       'button[data-testid="boards-list-show-more-button"]'
@@ -352,20 +360,31 @@ describe("My Login application", () => {
       await waitAndClick(showMoreBtn);
     }
 
-    const dropDownItem = await $(`a[title*="${boardName}"]`);
-    await dropDownItem.waitForDisplayed({ timeout: 10000 });
-    await dropDownItem.moveTo();
+    const dropDownItem = await $('div[data-testid="workspace-boards-and-views-lists"] > div > div:last-child ul[data-testid="collapsible-list-items"] li:first-child');
+    await waitAndClick(dropDownItem);
 
     const dotsIconBtn = await $(
-      `a[title*="${boardName}"] + div span[data-testid="OverflowMenuHorizontalIcon"]`
+      'div.board-header span[data-testid="OverflowMenuHorizontalIcon"]'
     );
     await waitAndClick(dotsIconBtn);
 
-    const closeBoardBtn = await $(`button[title="Close board"]`);
+    const closeBoardBtn = await $('ul.board-menu-navigation > li.board-menu-navigation-item:last-child');
     await waitAndClick(closeBoardBtn);
 
-    const confirmCloseBtn = await $(`button[title="Close"]`);
+    const confirmCloseBtn = await $('div.pop-over input[value="Close"]');
     await waitAndClick(confirmCloseBtn);
+
+    // const permanentlyDeleteBtn = await $('button[data-testid="close-board-delete-board-button"]');
+    // await waitAndClick(permanentlyDeleteBtn);
+
+    // const confirmPermanentlyDeleteBtn = await $('button[data-testid="close-board-delete-board-confirm-button"]');
+    // await waitAndClick(confirmPermanentlyDeleteBtn);
+
+    // const workspacesNavBtn = await $('button[data-testid="workspace-switcher"]');
+    // await waitAndClick(workspacesNavBtn);
+
+    // const yourWorkspacesNavBtn = await $('ul[data-testid="workspace-switcher-popover"] ul:last-child li');
+    // await waitAndClick(yourWorkspacesNavBtn);
 
     const returnToBoardsBtn = await $('a[data-testid="open-boards-link"]');
     await waitAndClick(returnToBoardsBtn);
