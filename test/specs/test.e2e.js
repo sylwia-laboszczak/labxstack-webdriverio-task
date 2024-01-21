@@ -1,11 +1,12 @@
 import { expect, browser, $ } from "@wdio/globals";
+import { Key } from 'webdriverio'
 
 
 const pageUrl="https://trello.com/home";
 const userEmail="";
 const userPassword="";
 const boardTitle = "My task to do";
-const listTilte = "Doing sth";
+const listTitle = "Doing sth";
 const defaultVerifyTimeout = 5000;
 
 
@@ -39,6 +40,7 @@ describe("My Login application", () => {
     const logoDiv = await $('a[href*="/boards"]');
     await waitAndAssertText(logoDiv, "Boards");
   });
+
 
   it("should edit the profile", async () => {
     // setup
@@ -139,24 +141,69 @@ describe("My Login application", () => {
       await createBoard(boardTitle);
 
       // execute
-      const addAnotherListBtn = await $('button[data-testid="list-composer-button"]' );
-      await waitAndClick(addAnotherListBtn);
-
-      const inputlistTitle = await $('ol#board textarea[name="Enter list title…"]');
-      await inputlistTitle.waitForDisplayed({ timeout: 5000 });
-      await inputlistTitle.setValue(listTilte);
-
-      const addListBtn = await $('button[data-testid="list-composer-add-list-button"]');
-      await waitAndClick(addListBtn);
+      await createList(listTitle);
 
       // verify
       const createdListTitle = await $('ol#board li:nth-child(4) h2');
-      await waitAndAssertText(createdListTitle, listTilte);
+      await waitAndAssertText(createdListTitle, listTitle);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
     }
   });
+
+  it("should create a card into the list ", async () => {
+    try {
+      // setup
+      await browser.url(boardPageUrl);
+      await createBoard(boardTitle);
+      await createList(listTitle);
+
+      // execute
+      const addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"' );
+      await waitAndClick(addCartBtn);
+
+      const cardTitleInput = await $('ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]');
+      await cardTitleInput.waitForDisplayed({ timeout: 5000 });
+      await cardTitleInput.setValue(listTitle);
+
+      const addCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(addCardToListBtn);
+
+      // a
+      const againAddCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"' );
+      await waitAndClick(againAddCartBtn);
+      const againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(againAddCardToListBtn);
+
+
+      // verify
+      const createdListTitle = await $('ol#board li:nth-child(4) ol li:first-child');
+      await waitAndAssertText(createdListTitle, listTitle);
+    } finally {
+      //delete board
+      await deleteByBoardName(boardTitle);
+    }
+  });
+
+
+
+
+
+
+  async function createList(listName) {
+    const addAnotherListBtn = await $('button[data-testid="list-composer-button"]');
+    await waitAndClick(addAnotherListBtn);
+
+    const inputlistTitle = await $('ol#board textarea[name="Enter list title…"]');
+    await inputlistTitle.waitForDisplayed({ timeout: 5000 });
+    await inputlistTitle.setValue(listName);
+
+    const addListBtn = await $('button[data-testid="list-composer-add-list-button"]');
+    await waitAndClick(addListBtn);
+  }
+
+
 
   async function createBoard(boardName) {
     const createBtn = await $(
@@ -224,6 +271,34 @@ describe("My Login application", () => {
     );
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   async function waitAndAssertText(element, expectedText) {
     await element.waitUntil(
       async function () {
@@ -238,7 +313,7 @@ describe("My Login application", () => {
   }
 
   async function waitAndClick(searchBtn) {
-    await searchBtn.waitForDisplayed({ timeout: 10000 });
+    await searchBtn.waitForDisplayed({ timeout: 5000 });
     await searchBtn.waitForClickable({ timeout: 3000 });
     await searchBtn.click();
   }
