@@ -4,7 +4,8 @@ import { expect, browser, $ } from "@wdio/globals";
 const pageUrl="https://trello.com/home";
 const userEmail="";
 const userPassword="";
-const boardTitle = "My task to do";
+const boardPageUrl = "https://trello.com/u/testeronilab/boards";
+let boardTitle = "My board";
 const listTitle = "Doing sth";
 const cardTitle = "task 1";
 const defaultVerifyTimeout = 5000;
@@ -12,34 +13,14 @@ const defaultVerifyTimeout = 5000;
 describe("My Login application", () => {
   beforeEach(async () => {
     await browser.setWindowSize(1800, 1024);
+
+    boardTitle = `My board (${browser.capabilities.browserName})`
   });
 
   afterEach(async () => {});
 
   it("should login with valid credentials", async () => {
-    // setup
-    await browser.url(pageUrl);
-    const loginBtn = await $('a[data-uuid*="_login"]');
-    await waitAndClick(loginBtn);
-
-    // execute
-    const usernameInput = await $("input#username");
-    await usernameInput.waitForDisplayed({ timeout: 3000 });
-    await usernameInput.setValue(userEmail);
-
-    const continueBtn = await $("button#login-submit");
-    await waitAndClick(continueBtn);
-
-    const passwordInput = await $("input#password");
-    await passwordInput.waitForDisplayed({ timeout: 3000 });
-    await passwordInput.setValue(userPassword);
-
-    const loginSubmitBtn = await $("button#login-submit");
-    await waitAndClick(loginSubmitBtn);
-
-    // verify
-    const logoDiv = await $('a[href*="/boards"]');
-    await waitAndAssertText(logoDiv, "Boards");
+    await login(userEmail, userPassword);
   });
 
   it("should edit the profile", async () => {
@@ -148,7 +129,7 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // verify
-      const createdListTitle = await $("ol#board li:nth-child(4) h2");
+      const createdListTitle = await $("ol#board li:last-of-type h2");
       await waitAndAssertText(createdListTitle, listTitle);
     } finally {
       //delete board
@@ -164,19 +145,19 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // execute
-      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
+      let addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
-      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
+      addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
 
       await fillCardWithText(cardTitle);
 
-      let againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      let againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
 
       // verify
       const createdListTitle = await $(
-        "ol#board li:nth-child(4) ol li:first-child"
+        "ol#board li:last-of-type ol li:first-child"
       );
       await waitAndAssertText(createdListTitle, cardTitle);
     } finally {
@@ -192,19 +173,19 @@ describe("My Login application", () => {
       await createBoard(boardTitle);
       await createList(listTitle);
 
-      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
+      let addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
-      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
+      addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
       await fillCardWithText("superTask1");
 
-      let  againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      let  againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
       await fillCardWithText("superTask2");
-      againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
       await fillCardWithText("superTask3");
-      againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
 
       // execute
@@ -217,7 +198,7 @@ describe("My Login application", () => {
 
       // verify
       const createdListTitle = await $(
-        "ol#board li:nth-child(4) ol li:nth-child(2)"
+        "ol#board li:last-of-type ol li:nth-child(2)"
       );
       await waitAndAssertText(createdListTitle, "superTask2");
     } finally {
@@ -290,6 +271,32 @@ describe("My Login application", () => {
     await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
   });
 
+
+  async function login(user, pass) {
+    await browser.url(pageUrl);
+    const loginBtn = await $('a[data-uuid*="_login"]');
+    await waitAndClick(loginBtn);
+
+    // execute
+    const usernameInput = await $("input#username");
+    await usernameInput.waitForDisplayed({ timeout: 3000 });
+    await usernameInput.setValue(user);
+
+    const continueBtn = await $("button#login-submit");
+    await waitAndClick(continueBtn);
+
+    const passwordInput = await $("input#password");
+    await passwordInput.waitForDisplayed({ timeout: 3000 });
+    await passwordInput.setValue(pass);
+
+    const loginSubmitBtn = await $("button#login-submit");
+    await waitAndClick(loginSubmitBtn);
+
+    // verify
+    const logoDiv = await $('a[href*="/boards"]');
+    await waitAndAssertText(logoDiv, "Boards");
+  }
+
   async function fillCardWithText(cardName) {
     const cardTitleInput = await $(
       'ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]'
@@ -353,17 +360,8 @@ describe("My Login application", () => {
     );
     await waitAndClick(yourWorkspacesNavBtn);
 
-    const showMoreBtn = await $(
-      'button[data-testid="boards-list-show-more-button"]'
-    );
-
-    let isShowMoreBtnExisting = await showMoreBtn.isExisting();
-    if (isShowMoreBtnExisting) {
-      await waitAndClick(showMoreBtn);
-    }
-
     const dropDown1Item = await $(
-      "ul.boards-page-board-section-list li:last-child"
+      `ul.boards-page-board-section-list li div[title*="${boardName}"]`
     );
     await waitAndClick(dropDown1Item);
 
@@ -392,9 +390,6 @@ describe("My Login application", () => {
     // const yourWorkspacesNavBtn = await $('ul[data-testid="workspace-switcher-popover"] ul:last-child li');
     // await waitAndClick(yourWorkspacesNavBtn);
 
-    const returnToBoardsBtn = await $('a[data-testid="open-boards-link"]');
-    await waitAndClick(returnToBoardsBtn);
-
     const emptyBoardsInfo = await $(
       'div[data-testid="boards-list-empty-state"] p'
     );
@@ -402,6 +397,11 @@ describe("My Login application", () => {
       emptyBoardsInfo,
       "You don’t have any boards in this Workspace yet. Boards you create or join will show up here."
     );
+
+    // const returnToBoardsBtn = await $('a[data-testid="open-boards-link"]');
+    // await waitAndClick(returnToBoardsBtn);
+
+    await browser.pause(3000);
   }
 
   async function waitAndAssertText(element, expectedText) {
