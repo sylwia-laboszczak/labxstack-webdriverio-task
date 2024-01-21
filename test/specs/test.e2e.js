@@ -1,5 +1,5 @@
 import { expect, browser, $ } from "@wdio/globals";
-import { Key } from 'webdriverio'
+import { Key } from "webdriverio";
 
 
 const pageUrl="https://trello.com/home";
@@ -7,7 +7,7 @@ const userEmail="";
 const userPassword="";
 const boardTitle = "My task to do";
 const listTitle = "Doing sth";
-const cardTitle = "task 1"
+const cardTitle = "task 1";
 const defaultVerifyTimeout = 5000;
 
 
@@ -41,7 +41,6 @@ describe("My Login application", () => {
     const logoDiv = await $('a[href*="/boards"]');
     await waitAndAssertText(logoDiv, "Boards");
   });
-
 
   it("should edit the profile", async () => {
     // setup
@@ -145,7 +144,7 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // verify
-      const createdListTitle = await $('ol#board li:nth-child(4) h2');
+      const createdListTitle = await $("ol#board li:nth-child(4) h2");
       await waitAndAssertText(createdListTitle, listTitle);
     } finally {
       //delete board
@@ -161,50 +160,89 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // execute
-      await createCard(cardTitle);
+      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      await waitAndClick(addCartBtn);
 
+      await fillCardWithText(cardTitle);
+
+      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      await waitAndClick(addCartBtn);
+      let  againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(againAddCardToListBtn);
 
       // verify
-      const createdListTitle = await $('ol#board li:nth-child(4) ol li:first-child');
+      const createdListTitle = await $(
+        "ol#board li:nth-child(4) ol li:first-child"
+      );
       await waitAndAssertText(createdListTitle, cardTitle);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
     }
-
-
   });
 
+  it("should filter the card name  ", async () => {
+    try {
+      // setup
+      await browser.url(boardPageUrl);
+      await createBoard(boardTitle);
+      await createList(listTitle);
 
-
-
-   async function createCard(cardName) {
-      const addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
       await waitAndClick(addCartBtn);
-
-      const cardTitleInput = await $('ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]');
-      await cardTitleInput.waitForDisplayed({ timeout: 5000 });
-      await cardTitleInput.setValue(cardName);
-
-      const addCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
-      await waitAndClick(addCardToListBtn);
-
-      // a
-      const againAddCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
-      await waitAndClick(againAddCartBtn);
-      const againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await fillCardWithText("superTask1");
+      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      await waitAndClick(addCartBtn);
+      let  againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
+      await fillCardWithText("superTask2");
+      againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(againAddCardToListBtn);
+      await fillCardWithText("superTask3");
+      againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(againAddCardToListBtn);
+   
+      // execute
+      const filtersCardBtn = await $('button[data-testid="filter-popover-button"]');
+      await waitAndClick(filtersCardBtn);
+
+      const filterCardSearchInput = await $('input[aria-placeholder*="Enter a keyword"]');
+      await filterCardSearchInput.waitForDisplayed({ timeout: 3000 });
+      await filterCardSearchInput.setValue("superTask2");
+
+
+      // verify
+      const createdListTitle = await $(
+        "ol#board li:nth-child(4) ol li:nth-child(2)"
+      );
+      await waitAndAssertText(createdListTitle, "superTask2");
+    } finally {
+      // delete board
+      await deleteByBoardName(boardTitle);
     }
+  });
+
+  async function fillCardWithText(cardName) {
+    const cardTitleInput = await $('ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]');
+    await cardTitleInput.waitForDisplayed({ timeout: 5000 });
+    await cardTitleInput.setValue(cardName);
+  }
 
   async function createList(listName) {
-    const addAnotherListBtn = await $('button[data-testid="list-composer-button"]');
+    const addAnotherListBtn = await $(
+      'button[data-testid="list-composer-button"]'
+    );
     await waitAndClick(addAnotherListBtn);
 
-    const inputlistTitle = await $('ol#board textarea[name="Enter list title…"]');
+    const inputlistTitle = await $(
+      'ol#board textarea[name="Enter list title…"]'
+    );
     await inputlistTitle.waitForDisplayed({ timeout: 5000 });
     await inputlistTitle.setValue(listName);
 
-    const addListBtn = await $('button[data-testid="list-composer-add-list-button"]');
+    const addListBtn = await $(
+      'button[data-testid="list-composer-add-list-button"]'
+    );
     await waitAndClick(addListBtn);
   }
 
@@ -247,12 +285,12 @@ describe("My Login application", () => {
       await waitAndClick(showMoreBtn);
     }
 
-    const dropDownItem = await $(`a[title="${boardName}"]`);
+    const dropDownItem = await $(`a[title*="${boardName}"]`);
     await dropDownItem.waitForDisplayed({ timeout: 10000 });
     await dropDownItem.moveTo();
 
     const dotsIconBtn = await $(
-      `a[title="${boardName}"] + div span[data-testid="OverflowMenuHorizontalIcon"]`
+      `a[title*="${boardName}"] + div span[data-testid="OverflowMenuHorizontalIcon"]`
     );
     await waitAndClick(dotsIconBtn);
 
@@ -274,8 +312,6 @@ describe("My Login application", () => {
     );
   }
 
- 
-
   async function waitAndAssertText(element, expectedText) {
     await element.waitUntil(
       async function () {
@@ -295,22 +331,3 @@ describe("My Login application", () => {
     await searchBtn.click();
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
