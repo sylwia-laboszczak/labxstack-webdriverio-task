@@ -201,7 +201,7 @@ describe("My Login application", () => {
       await fillCardWithText("superTask3");
       againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
-   
+
       // execute
       const filtersCardBtn = await $('button[data-testid="filter-popover-button"]');
       await waitAndClick(filtersCardBtn);
@@ -209,7 +209,6 @@ describe("My Login application", () => {
       const filterCardSearchInput = await $('input[aria-placeholder*="Enter a keyword"]');
       await filterCardSearchInput.waitForDisplayed({ timeout: 3000 });
       await filterCardSearchInput.setValue("superTask2");
-
 
       // verify
       const createdListTitle = await $(
@@ -222,8 +221,76 @@ describe("My Login application", () => {
     }
   });
 
+  it("should change the workspace visibility to Public", async () => {
+    // setup
+    await browser.url(boardPageUrl);
+    const dropDownTrelloWorkspace = await $(
+      'li[data-testid*="home-team-tab-section"]'
+    );
+    await waitAndClick(dropDownTrelloWorkspace);
+    const dropdownSettingsBtn = await $(
+      'a[data-testid="home-team-settings-tab"]'
+    );
+    await waitAndClick(dropdownSettingsBtn);
+
+    // execute
+    const workSpaceChangeBtn = await $(
+      ".header-settings ~ .js-react-root:nth-of-type(2) button"
+    );
+    await waitAndClick(workSpaceChangeBtn);
+
+    const workSpaceVisibilityDropDown = await $(
+      'div[data-testid="workspace-settings-visibility-popover-content"] ul li:last-child button'
+    );
+    await waitAndClick(workSpaceVisibilityDropDown);
+
+    // verify
+    const expectedVisibilityText =
+      "Public - This Workspace is public. It's visible to anyone with the link and will show up in search engines like Google. Only those invited to the Workspace can add and edit Workspace boards.";
+    const visibilityTypeText = await $(
+      ".header-settings ~ .js-react-root:nth-of-type(2) p"
+    );
+    await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
+  });
+
+
+  it("should change the workspace visibility to Private", async () => {
+    // setup
+    await browser.url(boardPageUrl);
+    const dropDownTrelloWorkspace = await $(
+      'li[data-testid*="home-team-tab-section"]'
+    );
+    await waitAndClick(dropDownTrelloWorkspace);
+    const dropdownSettingsBtn = await $(
+      'a[data-testid="home-team-settings-tab"]'
+    );
+    await waitAndClick(dropdownSettingsBtn);
+
+    // execute
+    const workSpaceChangeBtn = await $(
+      ".header-settings ~ .js-react-root:nth-of-type(2) button"
+    );
+    await waitAndClick(workSpaceChangeBtn);
+
+    const workSpaceVisibilityDropDown = await $(
+      'div[data-testid="workspace-settings-visibility-popover-content"] ul li:first-child button'
+    );
+    await waitAndClick(workSpaceVisibilityDropDown);
+
+    // verify
+    const expectedVisibilityText =
+      "Private - This Workspace is private. It's not indexed or visible to those outside the Workspace.";
+    const visibilityTypeText = await $(
+      ".header-settings ~ .js-react-root:nth-of-type(2) p"
+    );
+    await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
+  });
+  
+
   async function fillCardWithText(cardName) {
-    const cardTitleInput = await $('ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]');
+    const cardTitleInput = await $(
+      'ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]'
+    );
     await cardTitleInput.waitForDisplayed({ timeout: 5000 });
     await cardTitleInput.setValue(cardName);
   }
