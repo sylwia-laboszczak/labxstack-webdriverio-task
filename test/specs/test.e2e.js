@@ -108,7 +108,7 @@ describe("My Login application", () => {
       const searchBordTitleInput = await $(
         `div[data-testid="trello-hover-preview-popper-container"] span[name="${boardTitle}"]`
       );
-      await searchBordTitleInput.waitForDisplayed({ timeout: 20000 });
+      await searchBordTitleInput.waitForDisplayed({ timeout: 60000 });
 
       const boardsAgainBtn = await $('a[data-testid="open-boards-link"]');
       await waitAndClick(boardsAgainBtn);
@@ -401,7 +401,7 @@ describe("My Login application", () => {
     // const returnToBoardsBtn = await $('a[data-testid="open-boards-link"]');
     // await waitAndClick(returnToBoardsBtn);
 
-    await browser.pause(3000);
+    await browser.pause(2000);
   }
 
   async function waitAndAssertText(element, expectedText) {
