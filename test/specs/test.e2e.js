@@ -7,6 +7,7 @@ const userEmail="";
 const userPassword="";
 const boardTitle = "My task to do";
 const listTitle = "Doing sth";
+const cardTitle = "task 1"
 const defaultVerifyTimeout = 5000;
 
 
@@ -160,36 +161,40 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // execute
-      const addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"' );
-      await waitAndClick(addCartBtn);
-
-      const cardTitleInput = await $('ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]');
-      await cardTitleInput.waitForDisplayed({ timeout: 5000 });
-      await cardTitleInput.setValue(listTitle);
-
-      const addCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
-      await waitAndClick(addCardToListBtn);
-
-      // a
-      const againAddCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"' );
-      await waitAndClick(againAddCartBtn);
-      const againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
-      await waitAndClick(againAddCardToListBtn);
+      await createCard(cardTitle);
 
 
       // verify
       const createdListTitle = await $('ol#board li:nth-child(4) ol li:first-child');
-      await waitAndAssertText(createdListTitle, listTitle);
+      await waitAndAssertText(createdListTitle, cardTitle);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
     }
+
+
   });
 
 
 
 
+   async function createCard(cardName) {
+      const addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      await waitAndClick(addCartBtn);
 
+      const cardTitleInput = await $('ol#board li:nth-child(4) textarea[data-testid="list-card-composer-textarea"]');
+      await cardTitleInput.waitForDisplayed({ timeout: 5000 });
+      await cardTitleInput.setValue(cardName);
+
+      const addCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(addCardToListBtn);
+
+      // a
+      const againAddCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      await waitAndClick(againAddCartBtn);
+      const againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      await waitAndClick(againAddCardToListBtn);
+    }
 
   async function createList(listName) {
     const addAnotherListBtn = await $('button[data-testid="list-composer-button"]');
@@ -202,8 +207,6 @@ describe("My Login application", () => {
     const addListBtn = await $('button[data-testid="list-composer-add-list-button"]');
     await waitAndClick(addListBtn);
   }
-
-
 
   async function createBoard(boardName) {
     const createBtn = await $(
@@ -271,33 +274,7 @@ describe("My Login application", () => {
     );
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
   async function waitAndAssertText(element, expectedText) {
     await element.waitUntil(
@@ -318,3 +295,22 @@ describe("My Login application", () => {
     await searchBtn.click();
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
