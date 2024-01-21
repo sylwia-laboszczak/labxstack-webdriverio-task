@@ -10,10 +10,9 @@ const listTitle = "Doing sth";
 const cardTitle = "task 1";
 const defaultVerifyTimeout = 5000;
 
-
 describe("My Login application", () => {
   beforeEach(async () => {
-    await browser.setWindowSize(1440, 1024 )
+    await browser.setWindowSize(1800, 1024);
   });
 
   afterEach(async () => {});
@@ -166,14 +165,21 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // execute
-      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      let addCartBtn = await $(
+        'ol#board li:nth-child(4) button[data-testid="list-add-card-button"]'
+      );
+      await waitAndClick(addCartBtn);
       await waitAndClick(addCartBtn);
 
       await fillCardWithText(cardTitle);
 
-      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
-      await waitAndClick(addCartBtn);
-      let  againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
+      // addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
+      // await waitAndClick(addCartBtn);
+      // await waitAndClick(addCartBtn);
+
+      let againAddCardToListBtn = await $(
+        'ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]'
+      );
       await waitAndClick(againAddCardToListBtn);
 
       // verify
@@ -194,10 +200,10 @@ describe("My Login application", () => {
       await createBoard(boardTitle);
       await createList(listTitle);
 
-      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
       await fillCardWithText("superTask1");
-      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"');
+      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
       let  againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
@@ -290,7 +296,6 @@ describe("My Login application", () => {
     );
     await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
   });
-  
 
   async function fillCardWithText(cardName) {
     const cardTitleInput = await $(
@@ -345,10 +350,14 @@ describe("My Login application", () => {
   }
 
   async function deleteByBoardName(boardName) {
-    const workspacesNavBtn = await $('button[data-testid="workspace-switcher"]');
+    const workspacesNavBtn = await $(
+      'button[data-testid="workspace-switcher"]'
+    );
     await waitAndClick(workspacesNavBtn);
 
-    const yourWorkspacesNavBtn = await $('ul[data-testid="workspace-switcher-popover"] ul:last-child li');
+    const yourWorkspacesNavBtn = await $(
+      'ul[data-testid="workspace-switcher-popover"] ul:last-child li'
+    );
     await waitAndClick(yourWorkspacesNavBtn);
 
     const showMoreBtn = await $(
@@ -360,15 +369,19 @@ describe("My Login application", () => {
       await waitAndClick(showMoreBtn);
     }
 
-    const dropDownItem = await $('div[data-testid="workspace-boards-and-views-lists"] > div > div:last-child ul[data-testid="collapsible-list-items"] li:first-child');
-    await waitAndClick(dropDownItem);
+    const dropDown1Item = await $(
+      "ul.boards-page-board-section-list li:last-child"
+    );
+    await waitAndClick(dropDown1Item);
 
     const dotsIconBtn = await $(
       'div.board-header span[data-testid="OverflowMenuHorizontalIcon"]'
     );
     await waitAndClick(dotsIconBtn);
 
-    const closeBoardBtn = await $('ul.board-menu-navigation > li.board-menu-navigation-item:last-child');
+    const closeBoardBtn = await $(
+      "ul.board-menu-navigation > li.board-menu-navigation-item:last-child"
+    );
     await waitAndClick(closeBoardBtn);
 
     const confirmCloseBtn = await $('div.pop-over input[value="Close"]');
@@ -378,7 +391,7 @@ describe("My Login application", () => {
     // await waitAndClick(permanentlyDeleteBtn);
 
     // const confirmPermanentlyDeleteBtn = await $('button[data-testid="close-board-delete-board-confirm-button"]');
-    // await waitAndClick(confirmPermanentlyDeleteBtn);
+    // await waitAndClick(confirmPermanentlyDeleteBtn)
 
     // const workspacesNavBtn = await $('button[data-testid="workspace-switcher"]');
     // await waitAndClick(workspacesNavBtn);
