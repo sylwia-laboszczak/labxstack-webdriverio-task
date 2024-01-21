@@ -16,14 +16,32 @@ describe("My Login application", function () {
 
   beforeEach(async () => {
     await browser.setWindowSize(1280, 720);
-
     boardTitle = `My board (${browser.capabilities.browserName})`
   });
 
-  afterEach(async () => {});
-
   it("should login with valid credentials", async () => {
-    await login(userEmail, userPassword);
+    await browser.url(pageUrl);
+    const loginBtn = await $('a[data-uuid*="_login"]');
+    await waitAndClick(loginBtn);
+
+    // execute
+    const usernameInput = await $("input#username");
+    await usernameInput.waitForDisplayed({ timeout: 3000 });
+    await usernameInput.setValue(userEmail);
+
+    const continueBtn = await $("button#login-submit");
+    await waitAndClick(continueBtn);
+
+    const passwordInput = await $("input#password");
+    await passwordInput.waitForDisplayed({ timeout: 3000 });
+    await passwordInput.setValue(userPassword);
+
+    const loginSubmitBtn = await $("button#login-submit");
+    await waitAndClick(loginSubmitBtn);
+
+    // verify
+    const logoDiv = await $('a[href*="/boards"]');
+    await waitAndAssertText(logoDiv, "Boards");
   });
 
   it("should edit the profile", async () => {
@@ -273,32 +291,6 @@ describe("My Login application", function () {
     );
     await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
   });
-
-
-  async function login(user, pass) {
-    await browser.url(pageUrl);
-    const loginBtn = await $('a[data-uuid*="_login"]');
-    await waitAndClick(loginBtn);
-
-    // execute
-    const usernameInput = await $("input#username");
-    await usernameInput.waitForDisplayed({ timeout: 3000 });
-    await usernameInput.setValue(user);
-
-    const continueBtn = await $("button#login-submit");
-    await waitAndClick(continueBtn);
-
-    const passwordInput = await $("input#password");
-    await passwordInput.waitForDisplayed({ timeout: 3000 });
-    await passwordInput.setValue(pass);
-
-    const loginSubmitBtn = await $("button#login-submit");
-    await waitAndClick(loginSubmitBtn);
-
-    // verify
-    const logoDiv = await $('a[href*="/boards"]');
-    await waitAndAssertText(logoDiv, "Boards");
-  }
 
   async function fillCardWithText(cardName) {
     const cardTitleInput = await $(
