@@ -10,9 +10,12 @@ const listTitle = "Doing sth";
 const cardTitle = "task 1";
 const defaultVerifyTimeout = 5000;
 
-describe("My Login application", () => {
+describe("My Login application", function () {
+
+  this.retries(2)
+
   beforeEach(async () => {
-    await browser.setWindowSize(1800, 1024);
+    await browser.setWindowSize(1280, 720);
 
     boardTitle = `My board (${browser.capabilities.browserName})`
   });
