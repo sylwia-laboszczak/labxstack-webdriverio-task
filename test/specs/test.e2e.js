@@ -1,5 +1,4 @@
 import { expect, browser, $ } from "@wdio/globals";
-import { Key } from "webdriverio";
 
 
 const pageUrl="https://trello.com/home";
@@ -165,21 +164,14 @@ describe("My Login application", () => {
       await createList(listTitle);
 
       // execute
-      let addCartBtn = await $(
-        'ol#board li:nth-child(4) button[data-testid="list-add-card-button"]'
-      );
+      let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
+      addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
 
       await fillCardWithText(cardTitle);
 
-      // addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
-      // await waitAndClick(addCartBtn);
-      // await waitAndClick(addCartBtn);
-
-      let againAddCardToListBtn = await $(
-        'ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]'
-      );
+      let againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
 
       // verify
@@ -202,9 +194,10 @@ describe("My Login application", () => {
 
       let addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
-      await fillCardWithText("superTask1");
       addCartBtn = await $('ol#board li:nth-child(4) button[data-testid="list-add-card-button"]');
       await waitAndClick(addCartBtn);
+      await fillCardWithText("superTask1");
+
       let  againAddCardToListBtn = await $('ol#board li:nth-child(4) button[data-testid="list-card-composer-add-card-button"]');
       await waitAndClick(againAddCardToListBtn);
       await fillCardWithText("superTask2");
