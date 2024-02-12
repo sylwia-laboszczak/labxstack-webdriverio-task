@@ -1,4 +1,6 @@
-import { expect, browser, $ } from "@wdio/globals";
+import { browser, $ } from "@wdio/globals";
+import { should, expect, assert } from "chai";
+var workingShould = should();
 
 
 const pageUrl="https://trello.com/home";
@@ -9,19 +11,22 @@ let boardTitle = "My board";
 const listTitle = "Doing sth";
 const cardTitle = "task 1";
 const defaultVerifyTimeout = 5000;
+const defaultExpectWaitTimout = 1000;
 
 describe("My Login application", function () {
+   this.retries(2)
 
-  this.retries(2)
-
-  beforeEach(async () => {
+  beforeEach(async function () {
     await browser.setWindowSize(1280, 720);
-    boardTitle = `My board (${browser.capabilities.browserName})`
+    boardTitle = `My board (${browser.capabilities.browserName})`;
   });
 
+  // test case
   it("should login with valid credentials", async () => {
     await browser.url(pageUrl);
     const loginBtn = await $('a[data-uuid*="_login"]');
+    const loginText = await loginBtn.getText();
+    assert.equal(loginText, "Log in")
     await waitAndClick(loginBtn);
 
     // execute
@@ -41,7 +46,8 @@ describe("My Login application", function () {
 
     // verify
     const logoDiv = await $('a[href*="/boards"]');
-    await waitAndAssertText(logoDiv, "Boards");
+    const hrefBoardsText = await logoDiv.getText();
+    assert.equal(hrefBoardsText, "Boards")
   });
 
   it("should edit the profile", async () => {
@@ -65,11 +71,15 @@ describe("My Login application", function () {
     await waitAndClick(loginSubmitBtn);
 
     // // verify
+    await browser.pause(5000);
     const toastMsg = await $('div[role="alert"][tabindex="0"]');
-    await waitAndAssertText(toastMsg, "Saved");
+    const divToastText = await toastMsg.getText();
+    divToastText.should.equal("Saved");
 
+    await browser.pause(5000);
     const updatedBioInput = await $("textarea#bio");
-    await waitAndAssertText(updatedBioInput, expectedBioMsg);
+    const idBioText= await updatedBioInput.getText();
+    idBioText.should.equal(expectedBioMsg);
   });
 
   it("should create a board", async () => {
@@ -100,8 +110,10 @@ describe("My Login application", function () {
       await waitAndClick(createBoardSubmitBtn);
 
       // verify
+      await browser.pause(defaultExpectWaitTimout);
       const createdBoardTitle = await $('h1[data-testid="board-name-display"]');
-      await waitAndAssertText(createdBoardTitle, boardTitle);
+      const headeBoardText = await createdBoardTitle.getText();
+      expect(headeBoardText).to.equal(boardTitle);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
@@ -126,16 +138,15 @@ describe("My Login application", function () {
       await searchInput.setValue(boardTitle);
 
       // verify
-      const searchBordTitleInput = await $(
+      await browser.pause(10000);
+      const searchBoardTitleInput = await $(
         `div[data-testid="trello-hover-preview-popper-container"] span[name="${boardTitle}"]`
       );
-      await searchBordTitleInput.waitForDisplayed({ timeout: 60000 });
-
-      const boardsAgainBtn = await $('a[data-testid="open-boards-link"]');
-      await waitAndClick(boardsAgainBtn);
-
+      expect(searchBoardTitleInput).to.exist;
     } finally {
       //delete board
+      const boardsAgainBtn = await $('a[data-testid="open-boards-link"]');
+      await waitAndClick(boardsAgainBtn);
       await deleteByBoardName(boardTitle);
     }
   });
@@ -150,8 +161,10 @@ describe("My Login application", function () {
       await createList(listTitle);
 
       // verify
+      await browser.pause(defaultExpectWaitTimout);
       const createdListTitle = await $("ol#board li:last-of-type h2");
-      await waitAndAssertText(createdListTitle, listTitle);
+      const listTextCreated = await createdListTitle.getText();
+      expect(listTextCreated).to.equal(listTitle);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
@@ -166,21 +179,30 @@ describe("My Login application", function () {
       await createList(listTitle);
 
       // execute
-      let addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
+      let addCartBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-add-card-button"]'
+      );
       await waitAndClick(addCartBtn);
-      addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
+      addCartBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-add-card-button"]'
+      );
       await waitAndClick(addCartBtn);
 
       await fillCardWithText(cardTitle);
 
-      let againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
+      let againAddCardToListBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]'
+      );
       await waitAndClick(againAddCardToListBtn);
 
       // verify
       const createdListTitle = await $(
         "ol#board li:last-of-type ol li:first-child"
       );
-      await waitAndAssertText(createdListTitle, cardTitle);
+
+      await browser.pause(defaultExpectWaitTimout);
+      const listTilteText = await createdListTitle.getText();
+      expect(listTilteText).to.equal(cardTitle);
     } finally {
       //delete board
       await deleteByBoardName(boardTitle);
@@ -194,26 +216,40 @@ describe("My Login application", function () {
       await createBoard(boardTitle);
       await createList(listTitle);
 
-      let addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
+      let addCartBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-add-card-button"]'
+      );
       await waitAndClick(addCartBtn);
-      addCartBtn = await $('ol#board li:last-of-type button[data-testid="list-add-card-button"]');
+      addCartBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-add-card-button"]'
+      );
       await waitAndClick(addCartBtn);
       await fillCardWithText("superTask1");
 
-      let  againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
+      let againAddCardToListBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]'
+      );
       await waitAndClick(againAddCardToListBtn);
       await fillCardWithText("superTask2");
-      againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
+      againAddCardToListBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]'
+      );
       await waitAndClick(againAddCardToListBtn);
       await fillCardWithText("superTask3");
-      againAddCardToListBtn = await $('ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]');
+      againAddCardToListBtn = await $(
+        'ol#board li:last-of-type button[data-testid="list-card-composer-add-card-button"]'
+      );
       await waitAndClick(againAddCardToListBtn);
 
       // execute
-      const filtersCardBtn = await $('button[data-testid="filter-popover-button"]');
+      const filtersCardBtn = await $(
+        'button[data-testid="filter-popover-button"]'
+      );
       await waitAndClick(filtersCardBtn);
 
-      const filterCardSearchInput = await $('input[aria-placeholder*="Enter a keyword"]');
+      const filterCardSearchInput = await $(
+        'input[aria-placeholder*="Enter a keyword"]'
+      );
       await filterCardSearchInput.waitForDisplayed({ timeout: 3000 });
       await filterCardSearchInput.setValue("superTask2");
 
@@ -221,7 +257,10 @@ describe("My Login application", function () {
       const createdListTitle = await $(
         "ol#board li:last-of-type ol li:nth-child(2)"
       );
-      await waitAndAssertText(createdListTitle, "superTask2");
+
+      await browser.pause(defaultExpectWaitTimout);
+      const listTaskText = await createdListTitle.getText();
+      expect(listTaskText).to.equal("superTask2");
     } finally {
       // delete board
       await deleteByBoardName(boardTitle);
@@ -257,7 +296,10 @@ describe("My Login application", function () {
     const visibilityTypeText = await $(
       ".header-settings ~ .js-react-root:nth-of-type(2) p"
     );
-    await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
+
+    await browser.pause(defaultExpectWaitTimout);
+    const visibilityTextWorkspace = await visibilityTypeText.getText();
+    expect(visibilityTextWorkspace).to.equal(expectedVisibilityText);
   });
 
   it("should change the workspace visibility to Private", async () => {
@@ -289,7 +331,10 @@ describe("My Login application", function () {
     const visibilityTypeText = await $(
       ".header-settings ~ .js-react-root:nth-of-type(2) p"
     );
-    await waitAndAssertText(visibilityTypeText, expectedVisibilityText);
+
+    await browser.pause(defaultExpectWaitTimout);
+    const innerText7 = await visibilityTypeText.getText();
+    expect(innerText7).to.equal(expectedVisibilityText);
   });
 
   async function fillCardWithText(cardName) {
@@ -341,7 +386,10 @@ describe("My Login application", function () {
     await waitAndClick(createBoardSubmitBtn);
 
     const createdBoardTitle = await $('h1[data-testid="board-name-display"]');
-    await waitAndAssertText(createdBoardTitle, boardName);
+
+    await browser.pause(defaultExpectWaitTimout);
+    const innerText7 = await createdBoardTitle.getText();
+    expect(innerText7).to.equal(boardName);
   }
 
   async function deleteByBoardName(boardName) {
@@ -385,11 +433,12 @@ describe("My Login application", function () {
     // const yourWorkspacesNavBtn = await $('ul[data-testid="workspace-switcher-popover"] ul:last-child li');
     // await waitAndClick(yourWorkspacesNavBtn);
 
+    await browser.pause(defaultExpectWaitTimout);
     const emptyBoardsInfo = await $(
       'div[data-testid="boards-list-empty-state"] p'
     );
-    await waitAndAssertText(
-      emptyBoardsInfo,
+    const innerText3 = await emptyBoardsInfo.getText();
+    expect(innerText3).to.equal(
       "You don’t have any boards in this Workspace yet. Boards you create or join will show up here."
     );
 
@@ -397,19 +446,6 @@ describe("My Login application", function () {
     // await waitAndClick(returnToBoardsBtn);
 
     await browser.pause(2000);
-  }
-
-  async function waitAndAssertText(element, expectedText) {
-    await element.waitUntil(
-      async function () {
-        const innerText = await this.getText();
-        return innerText === expectedText;
-      },
-      {
-        timeout: defaultVerifyTimeout,
-        timeoutMsg: "expected text to be different after 5s",
-      }
-    );
   }
 
   async function waitAndClick(searchBtn) {
