@@ -1,10 +1,7 @@
 pipeline {
-      agent {
-        any {
-            image 'node:21.7.1' 
-            args '-p 3000:3000 -u root ' 
-        }
-    }
+    agent any
+    tools {nodejs "myNodeJs"}
+
     stages {
         stage('Build') { 
             steps {
