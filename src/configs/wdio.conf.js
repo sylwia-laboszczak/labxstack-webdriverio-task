@@ -1,3 +1,5 @@
+import { ReportAggregator, HtmlReporter} from 'wdio-html-nice-reporter' ;
+let reportAggregator;
 export const config = {
   //
   // ====================
@@ -49,8 +51,6 @@ export const config = {
   // https://saucelabs.com/platform/platform-configurator
   //
   capabilities: [
-    
-
     {
       browserName: "chrome",
       // "goog:chromeOptions": {
@@ -64,18 +64,11 @@ export const config = {
     //     args: ["-headless"],
     //   },
     // },
- 
-  // {
-  //       browserName: 'safari'
-  //   }
- 
- 
+
+    // {
+    //       browserName: 'safari'
+    //   }
   ],
-
-
-
-   
-  
 
   headless: false,
 
@@ -136,7 +129,6 @@ export const config = {
   // before running any tests.
   framework: "cucumber",
 
-
   cucumberOpts: {
     require: [
       "./src/stepDefinitions/01_SignUpAndSignIn.js",
@@ -146,8 +138,8 @@ export const config = {
       "./src/stepDefinitions/05_AddListToBoard.js",
       "./src/stepDefinitions/06_CreateCard.js",
       "./src/stepDefinitions/07_CardFiltering.js",
-      "./src/stepDefinitions/08_EditWorkSpace.js"
-    ],        // <string[]> (file/dir) require files before executing features
+      "./src/stepDefinitions/08_EditWorkSpace.js",
+    ], // <string[]> (file/dir) require files before executing features
     // backtrace: false,   // <boolean> show full backtrace for errors
     // compiler: [],       // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
     // dryRun: false,      // <boolean> invoke formatters without executing steps
@@ -159,9 +151,9 @@ export const config = {
     // profile: [],        // <string[]> (name) specify the profile to use
     // strict: false,      // <boolean> fail if there are any undefined or pending steps
     // tags: [],           // <string[]> (expression) only execute the features or scenarios with tags matching the expression
-     timeout: 20000,     // <number> timeout for step definitions
+    timeout: 20000, // <number> timeout for step definitions
     // ignoreUndefinedDefinitions: false, // <boolean> Enable this config to treat undefined definitions as warnings.
-},
+  },
 
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -176,7 +168,25 @@ export const config = {
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
-  reporters: ["spec"],
+  // wdio.conf.js
+
+  reporters: [
+    "spec",
+    [
+      "html-nice",
+      {
+        outputDir: "./reports/html-reports/",
+        filename: "report.html",
+        reportTitle: "Test Report Title",
+        linkScreenshots: true,
+        //to show the report in a browser when done
+        showInBrowser: true,
+        collapseTests: false,
+        //to turn on screenshots after every test
+        useOnAfterCommandForScreenshot: false,
+      }
+    ]
+  ],
 
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
@@ -198,8 +208,16 @@ export const config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {
-  // },
+  onPrepare: function (config, capabilities) {
+    reportAggregator = new ReportAggregator({
+      outputDir: './reports/html-reports/',
+      filename: 'master-report.html',
+      reportTitle: 'Master Report',
+      browserName : capabilities.browserName,
+      collapseTests: true
+    });
+  reportAggregator.clean() ;
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -243,7 +261,7 @@ export const config = {
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
    * @param {Array} args arguments that command would receive
-   */  // beforeCommand: function (commandName, args) {
+   */ // beforeCommand: function (commandName, args) {
   // },
   /**
    * Hook that gets executed before the suite starts
@@ -321,8 +339,11 @@ export const config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  // onComplete: function(exitCode, config, capabilities, results) {
-  // },
+  onComplete: function(exitCode, config, capabilities, results) {
+    (async () => {
+      await reportAggregator.createReport();
+  })();
+  },
   /**
    * Gets executed when a refresh happens.
    * @param {string} oldSessionId session ID of the old session

@@ -4,3 +4,4 @@ webDrivingTesting/node_modules
 unitTests/node_modules
 mochawesome-report/
 coverage/
+reports/html-reports
