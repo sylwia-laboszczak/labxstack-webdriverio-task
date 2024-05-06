@@ -1,0 +1,6 @@
+node_modules
+webDrivingTesting/node_modules
+.idea
+unitTests/node_modules
+mochawesome-report/
+coverage/

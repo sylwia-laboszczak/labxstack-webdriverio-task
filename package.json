@@ -1,0 +1,13 @@
+{
+  "name": "labxstack-webdriverio-task",
+  "type": "module",
+  "devDependencies": {
+    "@wdio/cli": "^8.28.6",
+    "@wdio/local-runner": "^8.28.7",
+    "@wdio/mocha-framework": "^8.28.6",
+    "@wdio/spec-reporter": "^8.28.6"
+  },
+  "scripts": {
+    "wdio": "wdio run ./wdio.conf.js"
+  }
+}
