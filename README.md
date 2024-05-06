@@ -53,7 +53,7 @@ When you're ready to make this README your own, just edit this file and use the 
 Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
 
 ## Name
-Choose a self-explaining name for your project.
+Testing Trello Website.
 
 ## Description
 During the testing phase of the Trello website, I focused on evaluating various functionalities including user login, card creation, list creation, card and list deletion, and changing access from private to public. Utilizing WebdriverIO along with Mocha, Chai, Page Object Model (POM), and Spec Reporters, I structured my tests for efficient execution and clear reporting. The initial step involved writing test scenarios in Gherkin syntax to establish a comprehensive testing framework.
