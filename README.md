@@ -56,7 +56,7 @@ Every project is different, so consider which of these sections apply to yours. 
 Choose a self-explaining name for your project.
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+During the testing phase of the Trello website, I focused on evaluating various functionalities including user login, card creation, list creation, card and list deletion, and changing access from private to public. Utilizing WebdriverIO along with Mocha, Chai, Page Object Model (POM), and Spec Reporters, I structured my tests for efficient execution and clear reporting. The initial step involved writing test scenarios in Gherkin syntax to establish a comprehensive testing framework.
 
 ## Badges
 On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
