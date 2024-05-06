@@ -1,31 +1,19 @@
-import {
-  After,
-  Before,
-  BeforeAll,
-  Given,
-  Then,
-  When,
-} from "@wdio/cucumber-framework";
-import { should, expect, assert } from "chai";
+import { After, Before, Given, Then, When } from "@wdio/cucumber-framework";
 import { browser } from "@wdio/globals";
 import BioPage from "../po/pages/bio.page.js";
 import LoginPage from "../po/pages/login.page.js";
 const userEmail = "";
 const userPassword = "";
-let expectedBioMsg = ""
-
-var workingShould = should();
+let expectedBioMsg = "";
 
 Before({ tags: "@desktopResolution2" }, async function () {
   await browser.setWindowSize(1280, 720);
-  await LoginPage.login(userEmail,userPassword);
+  await LoginPage.login(userEmail, userPassword);
 });
 
 After({ tags: "@desktopResolution2" }, async function () {});
 
-Given("I am on the my board page", async function () {
-
-});
+Given("I am on the my board page", async function () {});
 
 When("I click on my profile icon", async function () {
   await BioPage.open();
@@ -52,6 +40,6 @@ Then("I should see notification with title “Save”", async function () {
 });
 
 Then("I should see expected Bio Msg", async function () {
-  console.log(expectedBioMsg)
+  console.log(expectedBioMsg);
   await BioPage.verifyBioMsg(expectedBioMsg);
 });

@@ -11,10 +11,15 @@
     "chai": "^5.1.0",
     "chromedriver": "^122.0",
     "cucumber": "^6.0.7",
-    "mocha": "*"
+    "eslint": "^8.57.0",
+    "mocha": "*",
+    "prettier": "3.2.5"
   },
   "scripts": {
     "wdio": "wdio run ./src/configs/wdio.conf.js",
-    "generate": "./node_modules/.bin/cucumber-js ./src/features/08_EditWorkSpace.feature"
+    "test": "node ./src/dropboxapitests.js",
+    "generate": "./node_modules/.bin/cucumber-js ./src/features/08_EditWorkSpace.feature",
+    "linter": "eslint --fix ./src/po/**/*.js ./src/stepDefinitions/**/*.js ./src/dropboxapitests.js",
+    "prettier": "prettier --write ./src/po/**/*.js ./src/stepDefinitions/**/*.js ./src/dropboxapitests.js"
   }
 }

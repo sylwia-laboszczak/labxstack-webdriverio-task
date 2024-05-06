@@ -1,27 +1,16 @@
-import {
-  After,
-  Before,
-  BeforeAll,
-  Given,
-  Then,
-  When,
-} from "@wdio/cucumber-framework";
-import { should, expect, assert } from "chai";
+import { Before, Given, Then, When } from "@wdio/cucumber-framework";
+import { expect } from "chai";
 import { browser } from "@wdio/globals";
-import BoardPage from "../po/pages/board.page.js";
+
 import LoginPage from "../po/pages/login.page.js";
 import WorkspacePage from "../po/pages/workspace.page.js";
 const userEmail = "";
 const userPassword = "";
-let boardTitle = "My board";
-const listTitle = "Doing sth";
-const cardTitle = "task 1";
-var workingShould = should();
+
 const defaultExpectWaitTimout = 10000;
 
 Before({ tags: "@desktopResolution8" }, async function () {
   await browser.setWindowSize(1280, 720);
-  boardTitle = `My board (${browser.capabilities.browserName})`;
 });
 
 Given("I am logged in to Trello 8", async function () {
@@ -44,7 +33,7 @@ Given(
   "from the dropdown list I select “Workspace settings”",
   async function () {
     await WorkspacePage.changeWorkspace();
-  }
+  },
 );
 
 When("I change visibility from Private to Public", async function () {
@@ -74,5 +63,5 @@ Then(
     await browser.pause(defaultExpectWaitTimout);
     const innerText7 = await visibilityTypeText.getText();
     expect(innerText7).to.equal(expectedVisibilityText);
-  }
+  },
 );

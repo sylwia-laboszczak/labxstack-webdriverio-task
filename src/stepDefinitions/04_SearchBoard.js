@@ -1,20 +1,11 @@
-import {
-  After,
-  Before,
-  BeforeAll,
-  Given,
-  Then,
-  When,
-} from "@wdio/cucumber-framework";
-import { should, expect, assert } from "chai";
+import { After, Before, Given, Then, When } from "@wdio/cucumber-framework";
+import { expect } from "chai";
 import { browser } from "@wdio/globals";
 import BoardPage from "../po/pages/board.page.js";
 import LoginPage from "../po/pages/login.page.js";
 const userEmail = "";
 const userPassword = "";
 let boardTitle = "My board";
-var workingShould = should();
-const defaultExpectWaitTimout = 1000;
 
 Before({ tags: "@desktopResolution4" }, async function () {
   await browser.setWindowSize(1280, 720);
@@ -42,8 +33,7 @@ When("I click the search input", async function () {
 
 Then("I should see a list of boards that match my search", async function () {
   await browser.pause(8000);
-  const searchBoardTitleInput = await BoardPage.getSearchBoardByTitle(
-    boardTitle
-  );
+  const searchBoardTitleInput =
+    await BoardPage.getSearchBoardByTitle(boardTitle);
   expect(searchBoardTitleInput).to.exist;
 });

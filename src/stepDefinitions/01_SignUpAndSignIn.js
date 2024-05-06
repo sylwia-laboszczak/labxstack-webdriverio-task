@@ -1,18 +1,9 @@
-import {
-  Given,
-  When,
-  Then,
-  setDefaultTimeout,
-  After,
-  Before,
-  AfterAll,
-  BeforeAll,
-} from "@wdio/cucumber-framework";
+import { Given, When, Then, Before } from "@wdio/cucumber-framework";
 
-import { browser, $ } from "@wdio/globals";
+import { browser } from "@wdio/globals";
 
 import LoginPage from "../po/pages/login.page.js";
-import { should, expect, assert } from "chai";
+import { assert } from "chai";
 
 const userEmail = "";
 const userPassword = "";

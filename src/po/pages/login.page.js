@@ -1,6 +1,6 @@
 import Page from "./page.js";
-import { browser, $ } from "@wdio/globals";
-import { should, expect, assert } from "chai";
+import { $ } from "@wdio/globals";
+import { assert } from "chai";
 
 class LoginPage extends Page {
   get username() {
@@ -10,13 +10,13 @@ class LoginPage extends Page {
     return $("#password");
   }
   get submitBtn() {
-    return $('form button[type="submit"]');
+    return $("form button[type=\"submit\"]");
   }
   get flash() {
     return $("#flash");
   }
   get headerLinks() {
-    return $$("#header a");
+    return $("#header a");
   }
 
   async open() {
@@ -24,7 +24,7 @@ class LoginPage extends Page {
   }
 
   async navigateToLoginForm() {
-    const loginBtn = await $('a[data-uuid*="_login"]');
+    const loginBtn = await $("a[data-uuid*=\"_login\"]");
     const loginText = await loginBtn.getText();
     assert.equal(loginText, "Log in");
     await this.waitAndClick(loginBtn);
@@ -47,18 +47,16 @@ class LoginPage extends Page {
     await passwordInput.setValue(userPassword);
   }
 
-
-
   async submit() {
     const loginSubmitBtn = await $("button#login-submit");
     await this.waitAndClick(loginSubmitBtn);
   }
 
-  async getLogoDiv(){
-   return await $('a[href*="/boards"]');
+  async getLogoDiv() {
+    return await $("a[href*=\"/boards\"]");
   }
 
-  async login(email, pasword){
+  async login(email, pasword) {
     await this.open();
     await this.navigateToLoginForm();
     await this.setUserName(email);
@@ -69,6 +67,6 @@ class LoginPage extends Page {
     const hrefBoardsText = await logoDiv.getText();
     assert.equal(hrefBoardsText, "Boards");
   }
-} 
+}
 
 export default new LoginPage();

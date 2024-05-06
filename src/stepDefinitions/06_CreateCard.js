@@ -1,12 +1,5 @@
-import {
-  After,
-  Before,
-  BeforeAll,
-  Given,
-  Then,
-  When,
-} from "@wdio/cucumber-framework";
-import { should, expect, assert } from "chai";
+import { After, Before, Given, Then, When } from "@wdio/cucumber-framework";
+import { expect } from "chai";
 import { browser } from "@wdio/globals";
 import BoardPage from "../po/pages/board.page.js";
 import LoginPage from "../po/pages/login.page.js";
@@ -15,7 +8,6 @@ const userPassword = "";
 let boardTitle = "My board";
 const listTitle = "Doing sth";
 const cardTitle = "task 1";
-var workingShould = should();
 const defaultExpectWaitTimout = 1000;
 
 Before({ tags: "@desktopResolution6" }, async function () {
@@ -54,5 +46,5 @@ Then(
     await browser.pause(defaultExpectWaitTimout);
     const listTilteText = await createdListTitle.getText();
     expect(listTilteText).to.equal(cardTitle);
-  }
+  },
 );

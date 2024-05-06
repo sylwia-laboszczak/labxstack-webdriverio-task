@@ -1,19 +1,11 @@
-import {
-  After,
-  Before,
-  BeforeAll,
-  Given,
-  Then,
-  When,
-} from "@wdio/cucumber-framework";
-import { should, expect, assert } from "chai";
+import { After, Before, Given, Then, When } from "@wdio/cucumber-framework";
+import { expect, assert } from "chai";
 import { browser } from "@wdio/globals";
 import BoardPage from "../po/pages/board.page.js";
 import LoginPage from "../po/pages/login.page.js";
 const userEmail = "";
 const userPassword = "";
 let boardTitle = "My board";
-var workingShould = should();
 const defaultExpectWaitTimout = 1000;
 
 Before({ tags: "@desktopResolution3" }, async function () {
@@ -29,7 +21,6 @@ After({ tags: "@desktopResolution3" }, async function () {
 });
 
 Given("I am logged in to Trello 3", async function () {
-
   await BoardPage.open();
 });
 
@@ -38,7 +29,7 @@ When("I click the ‘Create Board’ button", async function () {
   await BoardPage.clickCreateBoard();
 });
 
-When("I enter the board title as {string}", async function (string) {
+When("I enter the board title as ‘My Board’", async function () {
   await BoardPage.setBordTitle(boardTitle);
 });
 
