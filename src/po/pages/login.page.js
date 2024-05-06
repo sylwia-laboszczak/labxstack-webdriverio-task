@@ -57,6 +57,18 @@ class LoginPage extends Page {
   async getLogoDiv(){
    return await $('a[href*="/boards"]');
   }
-}
+
+  async login(email, pasword){
+    await this.open();
+    await this.navigateToLoginForm();
+    await this.setUserName(email);
+    await this.continuesToSetPassword();
+    await this.setPassword(pasword);
+    await this.submit();
+    const logoDiv = await this.getLogoDiv();
+    const hrefBoardsText = await logoDiv.getText();
+    assert.equal(hrefBoardsText, "Boards");
+  }
+} 
 
 export default new LoginPage();

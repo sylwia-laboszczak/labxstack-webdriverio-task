@@ -20,7 +20,8 @@ export const config = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  specs: ["../tests/**/*.js"],
+  specs: ["../features/*.feature"],
+
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -41,7 +42,7 @@ export const config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: 2,
+  maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -52,17 +53,17 @@ export const config = {
 
     {
       browserName: "chrome",
-      "goog:chromeOptions": {
-        args: ["headless", "disable-gpu"],
-      },
+      // "goog:chromeOptions": {
+      //   args: ["headless", "disable-gpu"],
+      // },
     },
 
-    {
-      browserName: "firefox",
-      "moz:firefoxOptions": {
-        args: ["-headless"],
-      },
-    },
+    // {
+    //   browserName: "firefox",
+    //   "moz:firefoxOptions": {
+    //     args: ["-headless"],
+    //   },
+    // },
  
   // {
   //       browserName: 'safari'
@@ -76,7 +77,7 @@ export const config = {
    
   
 
-  headless: true,
+  headless: false,
 
   //
   // ===================
@@ -133,7 +134,34 @@ export const config = {
   //
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
-  framework: "mocha",
+  framework: "cucumber",
+
+
+  cucumberOpts: {
+    require: [
+      "./src/stepDefinitions/01_SignUpAndSignIn.js",
+      "./src/stepDefinitions/02_EditTheProfile.js",
+      "./src/stepDefinitions/03_CreateBoard.js",
+      "./src/stepDefinitions/04_SearchBoard.js",
+      "./src/stepDefinitions/05_AddListToBoard.js",
+      "./src/stepDefinitions/06_CreateCard.js",
+      "./src/stepDefinitions/07_CardFiltering.js",
+      "./src/stepDefinitions/08_EditWorkSpace.js"
+    ],        // <string[]> (file/dir) require files before executing features
+    // backtrace: false,   // <boolean> show full backtrace for errors
+    // compiler: [],       // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
+    // dryRun: false,      // <boolean> invoke formatters without executing steps
+    // failFast: false,    // <boolean> abort the run on first failure
+    // format: ['pretty'], // <string[]> (type[:path]) specify the output format, optionally supply PATH to redirect formatter output (repeatable)
+    // colors: true,       // <boolean> disable colors in formatter output
+    // snippets: true,     // <boolean> hide step definition snippets for pending steps
+    // source: true,       // <boolean> hide source uris
+    // profile: [],        // <string[]> (name) specify the profile to use
+    // strict: false,      // <boolean> fail if there are any undefined or pending steps
+    // tags: [],           // <string[]> (expression) only execute the features or scenarios with tags matching the expression
+     timeout: 20000,     // <number> timeout for step definitions
+    // ignoreUndefinedDefinitions: false, // <boolean> Enable this config to treat undefined definitions as warnings.
+},
 
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -215,8 +243,7 @@ export const config = {
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
    * @param {Array} args arguments that command would receive
-   */
-  // beforeCommand: function (commandName, args) {
+   */  // beforeCommand: function (commandName, args) {
   // },
   /**
    * Hook that gets executed before the suite starts
